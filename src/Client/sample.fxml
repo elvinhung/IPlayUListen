@@ -22,11 +22,12 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white;" />
+      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white; -fx-background-color: black;" GridPane.columnIndex="1">
          <children>
             <ScrollPane fx:id="chatScrollPane" fitToWidth="true" prefHeight="691.0" prefWidth="509.0" style="-fx-background-color: black;">
                <content>
-                  <TextFlow fx:id="chatArea" prefHeight="658.0" prefWidth="507.0" style="-fx-background-color: black; -fx-border-color: white;">
+                  <TextFlow fx:id="chatArea" prefHeight="656.0" prefWidth="505.0" style="-fx-background-color: black;">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding></TextFlow>
@@ -34,11 +35,11 @@
             </ScrollPane>
             <HBox alignment="CENTER" prefHeight="71.0" prefWidth="526.0">
                <children>
-                  <TextField fx:id="textInput" prefHeight="27.0" prefWidth="422.0" style="-fx-background-insets: 0;">
+                  <TextField fx:id="textInput" onKeyPressed="#sendTextEnter" prefHeight="27.0" prefWidth="422.0" style="-fx-background-insets: 0; -fx-border-color: black;">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin></TextField>
-                  <Button fx:id="sendTextBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#sendText" style="-fx-background-color: #46a5e0#46a5e0; -fx-text-fill: white; -fx-border-color: white; -fx-background-insets: 0;" text="Send">
+                  <Button fx:id="sendTextBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#sendText" style="-fx-background-color: #46a5e0; -fx-border-color: white; -fx-background-insets: 0;" text="Send">
                      <font>
                         <Font name="Microsoft Sans Serif" size="13.0" />
                      </font></Button>
@@ -46,5 +47,6 @@
             </HBox>
          </children>
       </VBox>
+      <VBox id="userListPanel" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white;" GridPane.columnIndex="2" />
    </children>
 </GridPane>

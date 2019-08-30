@@ -3,6 +3,8 @@ package Client;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -27,16 +29,26 @@ public class Controller {
   private void sendText() {
     client.getWriter().println(textInput.getText());
     client.getWriter().flush();
-    Text username = new Text(textInput.getText());
+    textInput.clear();
+  }
+  @FXML
+  private void sendTextEnter(KeyEvent keyEvent) {
+    if (keyEvent.getCode() == KeyCode.ENTER) {
+      sendText();
+    }
+  }
+
+  public void receiveText(String message) {
+    Text username = new Text(message);
     username.setFill(Color.BLUEVIOLET);
-    Text text = new Text(": " + textInput.getText());
+    Text text = new Text(": " + message);
+    text.setFill(Color.WHITE);
     if (chatArea.getChildren().size() != 0) {
       chatArea.getChildren().add(new Text(System.lineSeparator()));
     }
     chatArea.getChildren().addAll(username, text);
     chatScrollPane.layout();
     chatScrollPane.setVvalue(1.0);
-    textInput.clear();
   }
 
   public void setClient(Main client) {

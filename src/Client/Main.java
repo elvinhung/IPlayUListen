@@ -1,6 +1,7 @@
 package Client;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import java.net.Socket;
 public class Main extends Application {
   private BufferedReader reader;
   private PrintWriter writer;
+  private Controller controller;
 
   public void run() {
     launch();
@@ -19,12 +21,27 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception{
+    Stage loginStage = new Stage();
+    FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
+    Parent loginRoot = loginLoader.load();
+    LoginController loginController = loginLoader.getController();
+    loginController.setClient(this);
+    Scene loginScene = new Scene(loginRoot);
+    loginScene.getStylesheets().add(getClass().getResource("/Styles/LoginStyles.css").toExternalForm());
+    loginStage.setScene(loginScene);
+    loginStage.show();
+  }
+
+  public void createMainStage(String username) throws Exception {
+    Stage primaryStage = new Stage();
     if (!setUpNetworking("localhost", 8080)) return;
     FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
     Parent root = loader.load();
-    Controller controller = loader.getController();
+    controller = loader.getController();
     controller.setClient(this);
-    primaryStage.setScene(new Scene(root, 950, 700));
+    Scene scene = new Scene(root, 950, 700);
+    scene.getStylesheets().add(getClass().getResource("/Styles/IPlayUListenStyles.css").toExternalForm());
+    primaryStage.setScene(scene);
     primaryStage.show();
   }
 
@@ -53,6 +70,10 @@ public class Main extends Application {
     return true;
   }
 
+  public void handleMessage(String message) {
+    controller.receiveText(message);
+  }
+
   public PrintWriter getWriter() {
     return writer;
   }
@@ -63,7 +84,8 @@ public class Main extends Application {
       String message;
       try {
         while ((message = reader.readLine()) != null) {
-          System.out.println("Client received: " + message);
+          String msg = new String(message);
+          Platform.runLater(() -> handleMessage(msg));
         }
       } catch (IOException e) {
         e.printStackTrace();

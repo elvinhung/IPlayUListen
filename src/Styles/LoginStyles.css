@@ -1,0 +1,6 @@
+#connectBtn {
+  -fx-text-fill: white;
+}
+#connectBtn:hover {
+  -fx-text-fill: #03fc77;
+}

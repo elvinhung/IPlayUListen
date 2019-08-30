@@ -1,0 +1,6 @@
+#sendTextBtn {
+  -fx-text-fill: black;
+}
+#sendTextBtn:hover {
+  -fx-text-fill: white;
+}
