@@ -3,7 +3,10 @@ package Client;
 import javafx.animation.StrokeTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -30,8 +33,16 @@ public class LoginController {
 
   @FXML
   private void connect() throws Exception {
-    if (this.client != null && !username.getText().equals("")) {
-      client.createMainStage(username.getText());
+    String user = username.getText();
+    if (this.client != null && !user.trim().equals("")) {
+      client.createMainStage(user);
+    }
+  }
+
+  @FXML
+  private void userEnter(KeyEvent keyEvent) throws Exception{
+    if (keyEvent.getCode() == KeyCode.ENTER) {
+      connect();
     }
   }
 

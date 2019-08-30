@@ -8,15 +8,20 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.json.simple.JSONObject;
 
 public class Controller {
 
   private Main client;
+  private String userColor;
 
   public Controller() {}
 
   @FXML
-  private void initialize() {}
+  private void initialize() {
+    userColor = ColorHelper.getRandomColorString();
+    chatArea.setLineSpacing(5);
+  }
 
   @FXML
   private TextField textInput;
@@ -27,9 +32,16 @@ public class Controller {
 
   @FXML
   private void sendText() {
-    client.getWriter().println(textInput.getText());
-    client.getWriter().flush();
-    textInput.clear();
+    String text = textInput.getText();
+    if (!text.equals("")) {
+      JSONObject messageObj =  new JSONObject();
+      messageObj.put("user", client.getUsername());
+      messageObj.put("message", text);
+      messageObj.put("color", userColor);
+      client.getWriter().println(messageObj.toString());
+      client.getWriter().flush();
+      textInput.clear();
+    }
   }
   @FXML
   private void sendTextEnter(KeyEvent keyEvent) {
@@ -38,15 +50,15 @@ public class Controller {
     }
   }
 
-  public void receiveText(String message) {
-    Text username = new Text(message);
-    username.setFill(Color.BLUEVIOLET);
+  public void receiveText(String username, String message, String color) {
+    Text user = new Text(username);
+    user.setFill(ColorHelper.getColor(color));
     Text text = new Text(": " + message);
     text.setFill(Color.WHITE);
     if (chatArea.getChildren().size() != 0) {
       chatArea.getChildren().add(new Text(System.lineSeparator()));
     }
-    chatArea.getChildren().addAll(username, text);
+    chatArea.getChildren().addAll(user, text);
     chatScrollPane.layout();
     chatScrollPane.setVvalue(1.0);
   }

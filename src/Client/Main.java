@@ -6,14 +6,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.net.Socket;
 
 public class Main extends Application {
+
+  private JSONParser parser = new JSONParser();
   private BufferedReader reader;
   private PrintWriter writer;
   private Controller controller;
+  private String username;
+  private Stage loginStage;
 
   public void run() {
     launch();
@@ -21,7 +27,7 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception{
-    Stage loginStage = new Stage();
+    loginStage = new Stage();
     FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
     Parent loginRoot = loginLoader.load();
     LoginController loginController = loginLoader.getController();
@@ -35,10 +41,12 @@ public class Main extends Application {
   public void createMainStage(String username) throws Exception {
     Stage primaryStage = new Stage();
     if (!setUpNetworking("localhost", 8080)) return;
+    loginStage.close();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
     Parent root = loader.load();
-    controller = loader.getController();
-    controller.setClient(this);
+    this.username = username;
+    this.controller = loader.getController();
+    this.controller.setClient(this);
     Scene scene = new Scene(root, 950, 700);
     scene.getStylesheets().add(getClass().getResource("/Styles/IPlayUListenStyles.css").toExternalForm());
     primaryStage.setScene(scene);
@@ -70,12 +78,26 @@ public class Main extends Application {
     return true;
   }
 
-  public void handleMessage(String message) {
-    controller.receiveText(message);
+  public void handleMessage(String JSONString) {
+    try {
+      JSONObject messageObj = (JSONObject) parser.parse(JSONString);
+      String user = (String) messageObj.get("user");
+      String message = (String) messageObj.get("message");
+      String color = (String) messageObj.get("color");
+      controller.receiveText(user, message, color);
+    } catch (Exception e) {
+      System.out.println("Unable to parse JSON");
+    }
+
+
   }
 
   public PrintWriter getWriter() {
     return writer;
+  }
+
+  public String getUsername() {
+    return username;
   }
 
   class IncomingReader implements Runnable {

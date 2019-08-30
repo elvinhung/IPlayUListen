@@ -35,7 +35,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <TextField fx:id="username" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" promptText="Username" style="-fx-border-color: white; -fx-background-color: white;">
+            <TextField fx:id="username" onKeyPressed="#userEnter" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" promptText="Username" style="-fx-border-color: white; -fx-background-color: white;">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
