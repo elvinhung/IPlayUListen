@@ -91,12 +91,20 @@ public class Server implements Runnable {
 //      toTerminate.stop(); }
 //  }
 
+  public void sendToAll(String message) {
+    chatClients.forEach((client) -> {
+      client.getWriter().println(message);
+      client.getWriter().flush();
+    });
+  }
+
   private void addThread(Socket socket) {
     System.out.println("Client accepted: " + socket);
     if (isChatServer) {
-      ClientChatHandler client = new ClientChatHandler(socket);
+      ClientChatHandler client = new ClientChatHandler(this, socket);
       chatClients.add(client);
       try {
+        client.open();
         client.start();
         clientCount++;
       } catch (Exception e) {

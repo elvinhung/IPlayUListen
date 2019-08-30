@@ -9,6 +9,8 @@ import javafx.scene.text.TextFlow;
 
 public class Controller {
 
+  private Main client;
+
   public Controller() {}
 
   @FXML
@@ -23,6 +25,8 @@ public class Controller {
 
   @FXML
   private void sendText() {
+    client.getWriter().println(textInput.getText());
+    client.getWriter().flush();
     Text username = new Text(textInput.getText());
     username.setFill(Color.BLUEVIOLET);
     Text text = new Text(": " + textInput.getText());
@@ -33,5 +37,9 @@ public class Controller {
     chatScrollPane.layout();
     chatScrollPane.setVvalue(1.0);
     textInput.clear();
+  }
+
+  public void setClient(Main client) {
+    this.client = client;
   }
 }
