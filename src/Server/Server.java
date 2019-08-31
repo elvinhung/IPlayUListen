@@ -1,5 +1,7 @@
 package Server;
 
+import org.json.simple.JSONObject;
+
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class Server implements Runnable {
   private int clientCount = 0;
   private boolean isRunning = true;
   private boolean isChatServer;
+  private ArrayList<String> users = new ArrayList<>();
 
   public Server(int port, boolean isChatServer) {
     this.isChatServer = isChatServer;
@@ -107,6 +110,7 @@ public class Server implements Runnable {
         client.open();
         client.start();
         clientCount++;
+        sendUsernames(client);
       } catch (Exception e) {
         System.out.println("Error opening thread: " + e);
       }
@@ -119,6 +123,20 @@ public class Server implements Runnable {
       } catch (Exception e) {
         System.out.println("Error opening thread: " + e);
       }
+    }
+  }
+
+  public void addUser(String user) {
+    users.add(user);
+  }
+
+  private void sendUsernames(ClientChatHandler client) {
+    if (users.size() > 0) {
+      JSONObject usersObj = new JSONObject();
+      usersObj.put("type", "allUsers");
+      usersObj.put("users", this.users);
+      client.getWriter().println(usersObj.toString());
+      client.getWriter().flush();
     }
   }
 

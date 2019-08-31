@@ -1,9 +1,13 @@
 package Server;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.*;
 import java.net.*;
 
 public class ClientChatHandler extends Thread {
+  private JSONParser parser = new JSONParser();
   private Socket socket;
   private Server server;
   private BufferedReader reader;
@@ -32,10 +36,16 @@ public class ClientChatHandler extends Thread {
     String message;
     try {
       while ((message = reader.readLine()) != null) {
+        JSONObject messageObj = (JSONObject) parser.parse(message);
+        String type = (String) messageObj.get("type");
+        if (type.equals("userJoined")) {
+          String user = (String) messageObj.get("user");
+          server.addUser(user);
+        }
         server.sendToAll(message);
       }
-    } catch (IOException e) {
-      System.out.println("IOException: " + e);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

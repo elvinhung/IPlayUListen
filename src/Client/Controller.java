@@ -1,11 +1,17 @@
 package Client;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.json.simple.JSONObject;
@@ -29,12 +35,15 @@ public class Controller {
   private TextFlow chatArea;
   @FXML
   private ScrollPane chatScrollPane;
+  @FXML
+  private VBox userListPanel;
 
   @FXML
   private void sendText() {
     String text = textInput.getText();
     if (!text.equals("")) {
       JSONObject messageObj =  new JSONObject();
+      messageObj.put("type", "message");
       messageObj.put("user", client.getUsername());
       messageObj.put("message", text);
       messageObj.put("color", userColor);
@@ -48,6 +57,21 @@ public class Controller {
     if (keyEvent.getCode() == KeyCode.ENTER) {
       sendText();
     }
+  }
+
+  public void addUser(String username) {
+    Circle circle = new Circle(5, Color.LIMEGREEN);
+    ToggleButton user = new ToggleButton();
+    user.setGraphic(circle);
+    user.setGraphicTextGap(5);
+    user.setAlignment(Pos.CENTER_LEFT);
+    user.setText(username);
+    user.setStyle(" -fx-text-fill: white; -fx-background-color: black; -fx-border-color: white; -fx-font-size: 15px");
+    user.setMinHeight(30);
+    user.setMaxHeight(30);
+    user.setMinWidth(170);
+    user.setMaxWidth(170);
+    userListPanel.getChildren().add(user);
   }
 
   public void receiveText(String username, String message, String color) {

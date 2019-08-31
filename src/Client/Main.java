@@ -6,11 +6,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Main extends Application {
 
@@ -42,11 +44,16 @@ public class Main extends Application {
     Stage primaryStage = new Stage();
     if (!setUpNetworking("localhost", 8080)) return;
     loginStage.close();
+
     FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
     Parent root = loader.load();
+
     this.username = username;
     this.controller = loader.getController();
     this.controller.setClient(this);
+
+    sendUserJoined(username);
+
     Scene scene = new Scene(root, 950, 700);
     scene.getStylesheets().add(getClass().getResource("/Styles/IPlayUListenStyles.css").toExternalForm());
     primaryStage.setScene(scene);
@@ -78,13 +85,42 @@ public class Main extends Application {
     return true;
   }
 
+  private void sendUserJoined(String user) {
+    JSONObject userJoinedObj = new JSONObject();
+    userJoinedObj.put("type", "userJoined");
+    userJoinedObj.put("user", user);
+    writer.println(userJoinedObj);
+    writer.flush();
+  }
+
   public void handleMessage(String JSONString) {
     try {
       JSONObject messageObj = (JSONObject) parser.parse(JSONString);
-      String user = (String) messageObj.get("user");
-      String message = (String) messageObj.get("message");
-      String color = (String) messageObj.get("color");
-      controller.receiveText(user, message, color);
+      String type = (String) messageObj.get("type");
+      switch (type) {
+        case "message": {
+          String user = (String) messageObj.get("user");
+          String message = (String) messageObj.get("message");
+          String color = (String) messageObj.get("color");
+          controller.receiveText(user, message, color);
+          break;
+        }
+        case "userJoined": {
+          String user = (String) messageObj.get("user");
+          controller.addUser(user);
+          break;
+        }
+        case "allUsers": {
+          JSONArray users = (JSONArray) messageObj.get("users");
+          users.forEach((user) -> {
+            String username= (String) user;
+            controller.addUser(username);
+          });
+        }
+        default: {
+          System.out.println("Invalid type of message");
+        }
+      }
     } catch (Exception e) {
       System.out.println("Unable to parse JSON");
     }
