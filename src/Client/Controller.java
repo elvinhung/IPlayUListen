@@ -59,18 +59,28 @@ public class Controller {
     }
   }
 
+  @FXML
+  private void play() {
+    JSONObject messageObj = new JSONObject();
+    messageObj.put("type", "play");
+    messageObj.put("file", "test_file");
+    client.getWriter().println(messageObj.toString());
+    client.getWriter().flush();
+    System.out.println("sent play message");
+  }
+
   public void addUser(String username) {
-    Circle circle = new Circle(5, Color.LIMEGREEN);
+    Circle circle = new Circle(4.5, Color.LIMEGREEN);
     ToggleButton user = new ToggleButton();
     user.setGraphic(circle);
     user.setGraphicTextGap(5);
     user.setAlignment(Pos.CENTER_LEFT);
     user.setText(username);
     user.setStyle(" -fx-text-fill: white; -fx-background-color: black; -fx-border-color: white; -fx-font-size: 15px");
-    user.setMinHeight(30);
-    user.setMaxHeight(30);
-    user.setMinWidth(170);
-    user.setMaxWidth(170);
+    user.setMinHeight(32);
+    user.setMaxHeight(32);
+    user.setMinWidth(180);
+    user.setMaxWidth(180);
     userListPanel.getChildren().add(user);
   }
 

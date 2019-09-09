@@ -4,6 +4,7 @@ module IPlayUListen {
   requires javafx.base;
   requires javafx.graphics;
   requires json.simple;
+  requires java.desktop;
 
   opens Client;
 }

@@ -2,26 +2,33 @@ package Client;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javax.sound.sampled.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Main extends Application {
 
   private JSONParser parser = new JSONParser();
+  private Socket audioSocket;
+  private Socket chatSocket;
   private BufferedReader reader;
   private PrintWriter writer;
   private Controller controller;
   private String username;
   private Stage loginStage;
+  private IncomingReader incomingReader;
+  private IncomingAudio incomingAudio;
+  private InputStream audioIn;
 
   public void run() {
     launch();
@@ -42,7 +49,7 @@ public class Main extends Application {
 
   public void createMainStage(String username) throws Exception {
     Stage primaryStage = new Stage();
-    if (!setUpNetworking("localhost", 8080)) return;
+    if (!setUpChatNetworking("localhost", 8080) || !setUpAudioNetworking("localhost", 8081)) return;
     loginStage.close();
 
     FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
@@ -58,6 +65,16 @@ public class Main extends Application {
     scene.getStylesheets().add(getClass().getResource("/Styles/IPlayUListenStyles.css").toExternalForm());
     primaryStage.setScene(scene);
     primaryStage.show();
+    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+      @Override
+      public void handle(WindowEvent windowEvent) {
+        try {
+          System.out.println("goodbye");
+        } catch (Exception e) {
+
+        }
+      }
+    });
   }
 
 
@@ -69,15 +86,30 @@ public class Main extends Application {
     }
   }
 
-  private boolean setUpNetworking(String IP, int port) {
+  private boolean setUpChatNetworking(String IP, int port) {
     try {
-      Socket socket = new Socket(IP, port);
-      InputStreamReader input = new InputStreamReader(socket.getInputStream());
-      OutputStreamWriter output = new OutputStreamWriter(socket.getOutputStream());
+      chatSocket = new Socket(IP, port);
+      InputStreamReader input = new InputStreamReader(chatSocket.getInputStream());
+      OutputStreamWriter output = new OutputStreamWriter(chatSocket.getOutputStream());
       reader = new BufferedReader(input);
       writer = new PrintWriter(output);
-      System.out.println("Networking established with port: " + port);
-      Thread readerThread = new Thread(new IncomingReader());
+      System.out.println("chat networking established with port: " + port);
+      incomingReader = new IncomingReader();
+      Thread readerThread = new Thread(incomingReader);
+      readerThread.start();
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+
+  private boolean setUpAudioNetworking(String IP, int port) {
+    try {
+      audioSocket = new Socket(IP, port);
+      audioIn = new BufferedInputStream(audioSocket.getInputStream());
+      System.out.println("Audio networking established with port: " + port);
+      incomingAudio = new IncomingAudio();
+      Thread readerThread = new Thread(incomingAudio);
       readerThread.start();
     } catch (Exception e) {
       return false;
@@ -87,7 +119,7 @@ public class Main extends Application {
 
   private void sendUserJoined(String user) {
     JSONObject userJoinedObj = new JSONObject();
-    userJoinedObj.put("type", "userJoined");
+    userJoinedObj.put("type", "user_joined");
     userJoinedObj.put("user", user);
     writer.println(userJoinedObj);
     writer.flush();
@@ -105,12 +137,12 @@ public class Main extends Application {
           controller.receiveText(user, message, color);
           break;
         }
-        case "userJoined": {
+        case "user_joined": {
           String user = (String) messageObj.get("user");
           controller.addUser(user);
           break;
         }
-        case "allUsers": {
+        case "user_list": {
           JSONArray users = (JSONArray) messageObj.get("users");
           users.forEach((user) -> {
             String username= (String) user;
@@ -124,8 +156,6 @@ public class Main extends Application {
     } catch (Exception e) {
       System.out.println("Unable to parse JSON");
     }
-
-
   }
 
   public PrintWriter getWriter() {
@@ -137,6 +167,7 @@ public class Main extends Application {
   }
 
   class IncomingReader implements Runnable {
+
     @Override
     public void run() {
       String message;
@@ -149,6 +180,73 @@ public class Main extends Application {
         e.printStackTrace();
       }
     }
+
+  }
+
+  class IncomingAudio implements Runnable {
+
+    private boolean isOpen = true;
+
+    public synchronized void close() {
+      isOpen = false;
+    }
+
+    @Override
+    public void run() {
+//      File file = new File("src/Audio/test_file.wav");
+//      System.out.println(file.getAbsolutePath());
+      try {
+        //InputStream a = new BufferedInputStream(new FileInputStream(file));
+//        AudioFormat format = new AudioFormat((float) 41000.0, 16, 2, true, false);
+//        AudioInputStream ais = new AudioInputStream(audioIn, format, 25840);
+        AudioInputStream ais = AudioSystem.getAudioInputStream(audioIn);
+        Clip clip = AudioSystem.getClip();
+        System.out.println("clip created");
+        clip.open(ais);
+        clip.start();
+        System.out.println("clip playing");
+        Thread.sleep(100);
+        clip.drain();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      System.out.println("done");
+    }
+//      while (isOpen) {
+//        try {
+//          AudioInputStream ais = AudioSystem.getAudioInputStream(audioIn);
+//          AudioFormat format = ais.getFormat();
+//          DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+//          SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
+//          audioLine.open(format);
+//          audioLine.start();
+//
+//          System.out.println("Playback started.");
+//
+//          byte[] bytesBuffer = new byte[2048];
+//          int bytesRead = -1;
+//
+//          while ((bytesRead = ais.read(bytesBuffer)) != -1) {
+//            audioLine.write(bytesBuffer, 0, bytesRead);
+//          }
+//
+//          audioLine.drain();
+//          audioLine.close();
+//          ais.close();
+//
+//          System.out.println("Playback completed.");
+//
+////          Clip clip = AudioSystem.getClip();
+////          clip.open(ais);
+////          clip.start();
+////          Thread.sleep(100);
+////          clip.drain();
+//        } catch (Exception e) {
+//          System.out.println("Exception playing audio");
+//          e.printStackTrace();
+//        }
+//      }
+//    }
   }
 
 }

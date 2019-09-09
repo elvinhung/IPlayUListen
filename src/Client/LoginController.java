@@ -22,6 +22,7 @@ public class LoginController {
 
   public LoginController() {}
 
+
   @FXML
   private void initialize() {
     username.setFocusTraversable(false);
@@ -49,7 +50,5 @@ public class LoginController {
   public void setClient(Main client) {
     this.client = client;
   }
-
-
 
 }

@@ -4,3 +4,37 @@
 #sendTextBtn:hover {
   -fx-text-fill: white;
 }
+
+#chatScrollPane .scroll-bar {
+  -fx-background-color: black;
+  -fx-pref-width: 10px;
+}
+
+#chatScrollPane .scroll-bar .thumb {
+  -fx-background-color: black;
+  -fx-border-color: white;
+}
+
+.tab-pane *.tab-header-background {
+  -fx-background-color: black;
+  -fx-border-color: #525252;
+  -fx-border-width: 0 0 1 0;
+}
+
+.tab {
+  -fx-focus-color: transparent;
+  -fx-background-color: #373B44;
+  -fx-border-radius: 10px;
+}
+
+.tab:selected {
+  -fx-background-color: #00a5e3;
+}
+
+.tab-pane .tab .tab-label {
+  -fx-text-fill: white;
+}
+
+
+
+

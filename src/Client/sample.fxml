@@ -3,7 +3,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -14,45 +17,80 @@
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="950.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.Controller">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="352.0" minWidth="10.0" prefWidth="239.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="594.0" minWidth="10.0" prefWidth="526.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="235.0" minWidth="10.0" prefWidth="235.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="783.0" minWidth="10.0" prefWidth="723.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="594.0" minWidth="10.0" prefWidth="227.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white;" />
-      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white; -fx-background-color: black;" GridPane.columnIndex="1">
-         <children>
-            <ScrollPane fx:id="chatScrollPane" fitToWidth="true" prefHeight="691.0" prefWidth="509.0" style="-fx-background-color: black;">
+      <TabPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white;" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab closable="false" text="Chat">
                <content>
-                  <TextFlow fx:id="chatArea" prefHeight="656.0" prefWidth="505.0" style="-fx-background-color: black;">
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="665.0" prefWidth="723.0" style="-fx-background-color: black;">
+                           <children>
+                              <ScrollPane fx:id="chatScrollPane" fitToWidth="true" prefHeight="646.0" prefWidth="723.0" style="-fx-background-color: black;">
+                                 <content>
+                                    <TextFlow fx:id="chatArea" prefHeight="624.0" prefWidth="705.0" style="-fx-background-color: black;">
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </TextFlow>
+                                 </content>
+                              </ScrollPane>
+                              <HBox alignment="CENTER" prefHeight="70.0" prefWidth="723.0" style="-fx-border-color: #525252;">
+                                 <children>
+                                    <TextField fx:id="textInput" onKeyPressed="#sendTextEnter" prefHeight="29.0" prefWidth="575.0" style="-fx-background-insets: 0; -fx-border-color: black;">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button fx:id="sendTextBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#sendText" style="-fx-background-color: #a986e6; -fx-border-color: white; -fx-background-insets: 0;" text="Send">
+                                       <font>
+                                          <Font name="Microsoft Sans Serif" size="13.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+          </Tab>
+          <Tab closable="false" text="Library">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white;" GridPane.columnIndex="1">
+         <children>
+            <ScrollPane fitToWidth="true" prefHeight="578.0" prefWidth="227.0" style="-fx-background-color: black;">
+               <content>
+                  <VBox fx:id="userListPanel" alignment="TOP_CENTER" prefHeight="576.0" prefWidth="225.0" style="-fx-background-color: black;">
                      <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding></TextFlow>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
                </content>
             </ScrollPane>
-            <HBox alignment="CENTER" prefHeight="71.0" prefWidth="526.0">
+            <VBox alignment="CENTER" prefHeight="120.0" prefWidth="225.0" style="-fx-border-color: #525252;">
                <children>
-                  <TextField fx:id="textInput" onKeyPressed="#sendTextEnter" prefHeight="27.0" prefWidth="422.0" style="-fx-background-insets: 0; -fx-border-color: black;">
-                     <HBox.margin>
-                        <Insets right="5.0" />
-                     </HBox.margin></TextField>
-                  <Button fx:id="sendTextBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#sendText" style="-fx-background-color: #46a5e0; -fx-border-color: white; -fx-background-insets: 0;" text="Send">
-                     <font>
-                        <Font name="Microsoft Sans Serif" size="13.0" />
-                     </font></Button>
+                  <HBox alignment="CENTER" prefHeight="53.0" prefWidth="223.0" spacing="5.0">
+                     <children>
+                        <Button mnemonicParsing="false" text="pre" />
+                        <Button onMousePressed="#play" mnemonicParsing="false" text="play" />
+                        <Button mnemonicParsing="false" text="next" />
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
          </children>
       </VBox>
-      <VBox fx:id="userListPanel" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white;" GridPane.columnIndex="2">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-         <padding>
-            <Insets bottom="10.0" top="10.0" />
-         </padding></VBox>
    </children>
 </GridPane>

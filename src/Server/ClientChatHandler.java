@@ -38,9 +38,12 @@ public class ClientChatHandler extends Thread {
       while ((message = reader.readLine()) != null) {
         JSONObject messageObj = (JSONObject) parser.parse(message);
         String type = (String) messageObj.get("type");
-        if (type.equals("userJoined")) {
+        if (type.equals("user_joined")) {
           String user = (String) messageObj.get("user");
           server.addUser(user);
+        } else if (type.equals("play")) {
+          String fileName = (String) messageObj.get("file");
+          server.play(fileName);
         }
         server.sendToAll(message);
       }

@@ -8,16 +8,17 @@ import java.util.ArrayList;
 
 
 public class Server implements Runnable {
+  private ServerMain serverMain;
   private ArrayList<ClientAudioHandler> audioClients = new ArrayList<ClientAudioHandler>();
   private ArrayList<ClientChatHandler> chatClients = new ArrayList<ClientChatHandler>();
   private ServerSocket server = null;
   private Thread thread = null;
-  private int clientCount = 0;
   private boolean isRunning = true;
   private boolean isChatServer;
   private ArrayList<String> users = new ArrayList<>();
 
-  public Server(int port, boolean isChatServer) {
+  public Server(int port, boolean isChatServer, ServerMain serverMain) {
+    this.serverMain = serverMain;
     this.isChatServer = isChatServer;
     try {
       System.out.println("Binding to port " + port + ", please wait  ...");
@@ -109,40 +110,46 @@ public class Server implements Runnable {
       try {
         client.open();
         client.start();
-        clientCount++;
+        System.out.println("Chat client started");
         sendUsernames(client);
       } catch (Exception e) {
         System.out.println("Error opening thread: " + e);
       }
     } else {
-      ClientAudioHandler client = new ClientAudioHandler(socket);
-      audioClients.add(client);
-      try {
-        client.start();
-        clientCount++;
-      } catch (Exception e) {
-        System.out.println("Error opening thread: " + e);
-      }
+        ClientAudioHandler client = new ClientAudioHandler(socket);
+        audioClients.add(client);
+        System.out.println("Audio client created");
+        try {
+          client.open();
+        } catch (Exception e) {
+          System.out.println("Error opening thread: " + e);
+        }
     }
   }
 
-  public void addUser(String user) {
+  public void play(String fileName) {
+    this.serverMain.playAll(fileName);
+  }
+
+  public void playAll(File audioFile) {
+    audioClients.forEach(client -> {
+      client.setSoundFile(audioFile);
+      client.start();
+    });
+  }
+
+  public synchronized void addUser(String user) {
     users.add(user);
   }
 
   private void sendUsernames(ClientChatHandler client) {
     if (users.size() > 0) {
       JSONObject usersObj = new JSONObject();
-      usersObj.put("type", "allUsers");
+      usersObj.put("type", "user_list");
       usersObj.put("users", this.users);
       client.getWriter().println(usersObj.toString());
       client.getWriter().flush();
     }
-  }
-
-  public static void main(String args[]) {
-    Server audioServer = new Server(8080, true);
-    Server chatServer = new Server(8081, false);
   }
 }
 
