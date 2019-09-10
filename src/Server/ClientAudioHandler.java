@@ -37,10 +37,8 @@ public class ClientAudioHandler extends Thread {
         byte buffer[] = new byte[2048];
         int count;
         while ((count = bis.read(buffer)) != -1) {
-          System.out.println(count);
           out.write(buffer, 0, count);
         }
-        System.out.println("done sending audio data");
         soundFile = null;
       }
     } catch (Exception e) { }

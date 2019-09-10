@@ -41,11 +41,17 @@ public class ClientChatHandler extends Thread {
         if (type.equals("user_joined")) {
           String user = (String) messageObj.get("user");
           server.addUser(user);
+          if (server.getUsersLength() == 1) {
+            server.setHost(user, this);
+            messageObj.put("isHost", true);
+          } else {
+            server.sendUsernames(this);
+          }
         } else if (type.equals("play")) {
           String fileName = (String) messageObj.get("file");
           server.play(fileName);
         }
-        server.sendToAll(message);
+        server.sendToAll(messageObj.toString());
       }
     } catch (Exception e) {
       e.printStackTrace();

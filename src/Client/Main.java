@@ -139,15 +139,36 @@ public class Main extends Application {
         }
         case "user_joined": {
           String user = (String) messageObj.get("user");
-          controller.addUser(user);
+          if (messageObj.get("isHost") != null) {
+            controller.addUser(user, true);
+          } else {
+            controller.addUser(user, false);
+          }
           break;
         }
         case "user_list": {
+          String host = (String) messageObj.get("host");
           JSONArray users = (JSONArray) messageObj.get("users");
           users.forEach((user) -> {
             String username= (String) user;
-            controller.addUser(username);
+            if (!this.username.equals(username)) {
+              if (host.equals(username)) {
+                controller.addUser(username, true);
+              } else {
+                controller.addUser(username, false);
+              }
+            }
           });
+          break;
+        }
+        case "new_host": {
+          String user = (String) messageObj.get("user");
+          controller.setHost(user);
+          break;
+        }
+        case "pause": {
+          incomingAudio.stopClip();
+          break;
         }
         default: {
           System.out.println("Invalid type of message");
@@ -186,9 +207,18 @@ public class Main extends Application {
   class IncomingAudio implements Runnable {
 
     private boolean isOpen = true;
+    private Clip clip = null;
 
     public synchronized void close() {
       isOpen = false;
+    }
+
+    public void stopClip() {
+      System.out.println("attempting to stop clip");
+      if (clip != null && clip.isActive()) {
+        clip.close();
+        System.out.println("clip closed");
+      }
     }
 
     @Override
@@ -200,7 +230,7 @@ public class Main extends Application {
 //        AudioFormat format = new AudioFormat((float) 41000.0, 16, 2, true, false);
 //        AudioInputStream ais = new AudioInputStream(audioIn, format, 25840);
         AudioInputStream ais = AudioSystem.getAudioInputStream(audioIn);
-        Clip clip = AudioSystem.getClip();
+        clip = AudioSystem.getClip();
         System.out.println("clip created");
         clip.open(ais);
         clip.start();

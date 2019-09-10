@@ -16,6 +16,8 @@ public class Server implements Runnable {
   private boolean isRunning = true;
   private boolean isChatServer;
   private ArrayList<String> users = new ArrayList<>();
+  private String host = null;
+  private ClientChatHandler hostClient;
 
   public Server(int port, boolean isChatServer, ServerMain serverMain) {
     this.serverMain = serverMain;
@@ -95,6 +97,10 @@ public class Server implements Runnable {
 //      toTerminate.stop(); }
 //  }
 
+  public int getUsersLength() {
+    return this.users.size();
+  }
+
   public void sendToAll(String message) {
     chatClients.forEach((client) -> {
       client.getWriter().println(message);
@@ -111,7 +117,6 @@ public class Server implements Runnable {
         client.open();
         client.start();
         System.out.println("Chat client started");
-        sendUsernames(client);
       } catch (Exception e) {
         System.out.println("Error opening thread: " + e);
       }
@@ -142,14 +147,29 @@ public class Server implements Runnable {
     users.add(user);
   }
 
-  private void sendUsernames(ClientChatHandler client) {
+  public void sendUsernames(ClientChatHandler client) {
     if (users.size() > 0) {
+      System.out.println("sending usernames to clients");
       JSONObject usersObj = new JSONObject();
       usersObj.put("type", "user_list");
       usersObj.put("users", this.users);
+      usersObj.put("host", this.host);
       client.getWriter().println(usersObj.toString());
       client.getWriter().flush();
     }
+  }
+
+  private void sendNewHost(ClientChatHandler client) {
+    JSONObject usersObj = new JSONObject();
+    usersObj.put("type", "new_host");
+    usersObj.put("user", this.host);
+    client.getWriter().println(usersObj.toString());
+    client.getWriter().flush();
+  }
+
+  public void setHost(String user, ClientChatHandler hostClient) {
+    this.host = user;
+    this.hostClient = hostClient;
   }
 }
 

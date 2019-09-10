@@ -3,6 +3,7 @@ package Client;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -69,8 +70,22 @@ public class Controller {
     System.out.println("sent play message");
   }
 
-  public void addUser(String username) {
-    Circle circle = new Circle(4.5, Color.LIMEGREEN);
+  @FXML
+  private void pause() {
+    JSONObject messageObj = new JSONObject();
+    messageObj.put("type", "pause");
+    client.getWriter().println(messageObj.toString());
+    client.getWriter().flush();
+    System.out.println("sent pause message");
+  }
+
+  public void addUser(String username, boolean isHost) {
+    Circle circle;
+    if (isHost) {
+      circle = new Circle(4.5, Color.BLUEVIOLET);
+    } else {
+      circle = new Circle(4.5, Color.LIMEGREEN);
+    }
     ToggleButton user = new ToggleButton();
     user.setGraphic(circle);
     user.setGraphicTextGap(5);
@@ -82,6 +97,16 @@ public class Controller {
     user.setMinWidth(180);
     user.setMaxWidth(180);
     userListPanel.getChildren().add(user);
+  }
+
+  public void setHost(String user) {
+    Circle circle = new Circle(4.5, Color.BLUEVIOLET);
+    for (Node e: userListPanel.getChildren()) {
+      ToggleButton btn = (ToggleButton) e;
+      if (btn.getText().equals(user)) {
+        btn.setGraphic(circle);
+      }
+    }
   }
 
   public void receiveText(String username, String message, String color) {
