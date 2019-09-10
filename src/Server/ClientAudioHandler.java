@@ -39,6 +39,7 @@ public class ClientAudioHandler extends Thread {
         while ((count = bis.read(buffer)) != -1) {
           out.write(buffer, 0, count);
         }
+        System.out.println("done writing audio to client");
         soundFile = null;
       }
     } catch (Exception e) { }

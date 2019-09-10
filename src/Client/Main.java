@@ -15,6 +15,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Main extends Application {
 
@@ -70,6 +71,7 @@ public class Main extends Application {
       public void handle(WindowEvent windowEvent) {
         try {
           System.out.println("goodbye");
+          primaryStage.close();
         } catch (Exception e) {
 
         }
@@ -140,6 +142,7 @@ public class Main extends Application {
         case "user_joined": {
           String user = (String) messageObj.get("user");
           if (messageObj.get("isHost") != null) {
+            controller.enablePlayback();
             controller.addUser(user, true);
           } else {
             controller.addUser(user, false);
@@ -168,6 +171,15 @@ public class Main extends Application {
         }
         case "pause": {
           incomingAudio.stopClip();
+          break;
+        }
+        case "song_list": {
+          ArrayList<String> songList = new ArrayList<>();
+          JSONArray songs = (JSONArray) messageObj.get("songs");
+          songs.forEach(song -> {
+            songList.add((String) song);
+          });
+          controller.createSongList(songList);
           break;
         }
         default: {

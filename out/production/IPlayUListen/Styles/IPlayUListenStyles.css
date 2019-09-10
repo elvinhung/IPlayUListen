@@ -5,12 +5,12 @@
   -fx-text-fill: white;
 }
 
-#chatScrollPane .scroll-bar {
+.scrollPane .scroll-bar {
   -fx-background-color: black;
   -fx-pref-width: 10px;
 }
 
-#chatScrollPane .scroll-bar .thumb {
+.scrollPane .scroll-bar .thumb {
   -fx-background-color: black;
   -fx-border-color: white;
 }

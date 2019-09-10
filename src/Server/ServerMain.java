@@ -15,7 +15,7 @@ public class ServerMain {
 
   public void playAll(String fileName) {
     System.out.println("play All with: " + fileName);
-    File audioFile = new File("src/Audio/" + fileName + ".wav");
+    File audioFile = new File("src/Audio/" + fileName);
     try {
       System.out.println(AudioSystem.getAudioFileFormat(audioFile));
 

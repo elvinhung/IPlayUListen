@@ -34,7 +34,7 @@
                      <children>
                         <VBox prefHeight="665.0" prefWidth="723.0" style="-fx-background-color: black;">
                            <children>
-                              <ScrollPane fx:id="chatScrollPane" fitToWidth="true" prefHeight="646.0" prefWidth="723.0" style="-fx-background-color: black;">
+                              <ScrollPane fx:id="chatScrollPane" fitToWidth="true" prefHeight="646.0" prefWidth="723.0" style="-fx-background-color: black;" styleClass="scrollPane">
                                  <content>
                                     <TextFlow fx:id="chatArea" prefHeight="624.0" prefWidth="705.0" style="-fx-background-color: black;">
                                        <padding>
@@ -63,11 +63,22 @@
                   </AnchorPane>
                </content>
           </Tab>
-          <Tab closable="false" text="Library">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </Tab>
+            <Tab text="Library">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: black;">
+                     <children>
+                        <ScrollPane fx:id="libraryPane" fitToWidth="true" prefHeight="666.0" prefWidth="723.0" style="-fx-background-color: black;" styleClass="scrollPane">
+                           <content>
+                              <VBox fx:id="library" prefHeight="665.0" prefWidth="721.0" style="-fx-background-color: black;">
+                                 <padding>
+                                    <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                                 </padding></VBox>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
       <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: white;" GridPane.columnIndex="1">
@@ -104,7 +115,7 @@
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets></Button>
-                        <Button fx:id="nextBtn" onMousePressed="#pause" mnemonicParsing="false" style="-fx-background-color: black;">
+                        <Button fx:id="nextBtn" mnemonicParsing="false" onMousePressed="#pause" style="-fx-background-color: black;">
                            <graphic>
                               <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true">
                                  <image>

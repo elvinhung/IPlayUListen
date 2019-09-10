@@ -1,5 +1,6 @@
 package Server;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.net.*;
@@ -18,6 +19,7 @@ public class Server implements Runnable {
   private ArrayList<String> users = new ArrayList<>();
   private String host = null;
   private ClientChatHandler hostClient;
+  private String currentSong = null;
 
   public Server(int port, boolean isChatServer, ServerMain serverMain) {
     this.serverMain = serverMain;
@@ -132,7 +134,16 @@ public class Server implements Runnable {
     }
   }
 
+  public void play() {
+    if (currentSong != null) {
+      this.serverMain.playAll(currentSong);
+    } else {
+      System.out.println("no current song");
+    }
+  }
+
   public void play(String fileName) {
+    this.currentSong = fileName;
     this.serverMain.playAll(fileName);
   }
 
@@ -157,6 +168,20 @@ public class Server implements Runnable {
       client.getWriter().println(usersObj.toString());
       client.getWriter().flush();
     }
+  }
+
+  public void sendSongLibrary(ClientChatHandler client) {
+    File audioFolder = new File("src/Audio");
+    String[] files = audioFolder.list();
+    JSONArray fileList = new JSONArray();
+    for (String file: files) {
+      fileList.add(file);
+    }
+    JSONObject usersObj = new JSONObject();
+    usersObj.put("type", "song_list");
+    usersObj.put("songs", fileList);
+    client.getWriter().println(usersObj.toString());
+    client.getWriter().flush();
   }
 
   private void sendNewHost(ClientChatHandler client) {

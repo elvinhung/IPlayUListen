@@ -41,6 +41,7 @@ public class ClientChatHandler extends Thread {
         if (type.equals("user_joined")) {
           String user = (String) messageObj.get("user");
           server.addUser(user);
+          server.sendSongLibrary(this);
           if (server.getUsersLength() == 1) {
             server.setHost(user, this);
             messageObj.put("isHost", true);
@@ -49,7 +50,10 @@ public class ClientChatHandler extends Thread {
           }
         } else if (type.equals("play")) {
           String fileName = (String) messageObj.get("file");
-          server.play(fileName);
+          server.play();
+        } else if (type.equals("play_song")) {
+          String song = (String) messageObj.get("song");
+          server.play(song);
         }
         server.sendToAll(messageObj.toString());
       }
