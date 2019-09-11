@@ -128,17 +128,10 @@ public class Server implements Runnable {
         System.out.println("Audio client created");
         try {
           client.open();
+          client.start();
         } catch (Exception e) {
           System.out.println("Error opening thread: " + e);
         }
-    }
-  }
-
-  public void play() {
-    if (currentSong != null) {
-      this.serverMain.playAll(currentSong);
-    } else {
-      System.out.println("no current song");
     }
   }
 
@@ -150,7 +143,6 @@ public class Server implements Runnable {
   public void playAll(File audioFile) {
     audioClients.forEach(client -> {
       client.setSoundFile(audioFile);
-      client.start();
     });
   }
 

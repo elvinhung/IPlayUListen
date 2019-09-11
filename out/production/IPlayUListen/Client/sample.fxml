@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -94,6 +95,11 @@
             </ScrollPane>
             <VBox alignment="CENTER" prefHeight="120.0" prefWidth="225.0" style="-fx-border-color: #525252;">
                <children>
+                  <ToggleButton fx:id="songText" mnemonicParsing="false" style="-fx-background-color: black;" textFill="#00ff80">
+                     <font>
+                        <Font name="Microsoft Sans Serif" size="14.0" />
+                     </font>
+                  </ToggleButton>
                   <HBox alignment="CENTER" prefHeight="53.0" prefWidth="223.0" spacing="10.0">
                      <children>
                         <Button fx:id="prevBtn" mnemonicParsing="false" style="-fx-background-color: black;">
@@ -106,7 +112,7 @@
                            </graphic></Button>
                         <Button fx:id="playBtn" alignment="CENTER_RIGHT" contentDisplay="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onMousePressed="#play" prefHeight="34.0" prefWidth="34.0" style="-fx-background-color: black; -fx-border-color: white; -fx-background-radius: 50; -fx-border-radius: 50;" textAlignment="CENTER">
                            <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="11.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="playBtnImg" fitHeight="15.0" fitWidth="11.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../play.png" />
                                  </image>
@@ -115,7 +121,7 @@
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets></Button>
-                        <Button fx:id="nextBtn" mnemonicParsing="false" onMousePressed="#pause" style="-fx-background-color: black;">
+                        <Button fx:id="nextBtn" mnemonicParsing="false" style="-fx-background-color: black;">
                            <graphic>
                               <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true">
                                  <image>

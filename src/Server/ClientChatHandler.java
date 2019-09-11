@@ -48,9 +48,6 @@ public class ClientChatHandler extends Thread {
           } else {
             server.sendUsernames(this);
           }
-        } else if (type.equals("play")) {
-          String fileName = (String) messageObj.get("file");
-          server.play();
         } else if (type.equals("play_song")) {
           String song = (String) messageObj.get("song");
           server.play(song);

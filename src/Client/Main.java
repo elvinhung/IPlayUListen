@@ -71,6 +71,7 @@ public class Main extends Application {
       public void handle(WindowEvent windowEvent) {
         try {
           System.out.println("goodbye");
+          incomingAudio.stopClip();
           primaryStage.close();
         } catch (Exception e) {
 
@@ -131,6 +132,7 @@ public class Main extends Application {
     try {
       JSONObject messageObj = (JSONObject) parser.parse(JSONString);
       String type = (String) messageObj.get("type");
+      System.out.println(type);
       switch (type) {
         case "message": {
           String user = (String) messageObj.get("user");
@@ -143,6 +145,7 @@ public class Main extends Application {
           String user = (String) messageObj.get("user");
           if (messageObj.get("isHost") != null) {
             controller.enablePlayback();
+            controller.setHost();
             controller.addUser(user, true);
           } else {
             controller.addUser(user, false);
@@ -166,10 +169,15 @@ public class Main extends Application {
         }
         case "new_host": {
           String user = (String) messageObj.get("user");
-          controller.setHost(user);
+          break;
+        }
+        case "play": {
+          controller.setPlay(true);
+          incomingAudio.playClip();
           break;
         }
         case "pause": {
+          controller.setPlay(false);
           incomingAudio.stopClip();
           break;
         }
@@ -182,12 +190,20 @@ public class Main extends Application {
           controller.createSongList(songList);
           break;
         }
+        case "play_song": {
+          String songName = (String) messageObj.get("song");
+          System.out.println(songName);
+          controller.setPlay(true);
+          controller.setSong(songName);
+          break;
+        }
         default: {
           System.out.println("Invalid type of message");
         }
       }
     } catch (Exception e) {
       System.out.println("Unable to parse JSON");
+      e.printStackTrace();
     }
   }
 
@@ -220,6 +236,7 @@ public class Main extends Application {
 
     private boolean isOpen = true;
     private Clip clip = null;
+    private long position = 0;
 
     public synchronized void close() {
       isOpen = false;
@@ -228,8 +245,19 @@ public class Main extends Application {
     public void stopClip() {
       System.out.println("attempting to stop clip");
       if (clip != null && clip.isActive()) {
-        clip.close();
+        position = clip.getMicrosecondPosition();
+        clip.stop();
+        System.out.println(position);
         System.out.println("clip closed");
+      }
+    }
+
+    public void playClip() {
+      System.out.println("attempting to play clip");
+      if (clip != null) {
+        clip.setMicrosecondPosition(position);
+        clip.start();
+        System.out.println("clip started");
       }
     }
 
@@ -247,8 +275,8 @@ public class Main extends Application {
         clip.open(ais);
         clip.start();
         System.out.println("clip playing");
-        Thread.sleep(100);
-        clip.drain();
+//        Thread.sleep(100);
+//        clip.drain();
       } catch (Exception e) {
         e.printStackTrace();
       }

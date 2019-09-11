@@ -31,17 +31,20 @@ public class ClientAudioHandler extends Thread {
 
   @Override
   public void run() {
-    try {
-      if (soundFile != null && out != null) {
-        FileInputStream bis = new FileInputStream(soundFile);
-        byte buffer[] = new byte[2048];
-        int count;
-        while ((count = bis.read(buffer)) != -1) {
-          out.write(buffer, 0, count);
+    while (out != null) {
+      try {
+        if (soundFile != null) {
+          FileInputStream bis = new FileInputStream(soundFile);
+          byte buffer[] = new byte[2048];
+          int count;
+          while ((count = bis.read(buffer)) != -1) {
+            out.write(buffer, 0, count);
+          }
+          System.out.println("done writing audio to client");
+          soundFile = null;
         }
-        System.out.println("done writing audio to client");
-        soundFile = null;
-      }
-    } catch (Exception e) { }
+        Thread.sleep(100);
+      } catch (Exception e) { }
+    }
   }
 }

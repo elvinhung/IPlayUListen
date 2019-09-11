@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -22,12 +24,17 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Controller {
 
   private Main client;
   private String userColor;
+  private boolean isHost;
+  private File playImg = new File("src/play.png");
+  private File pauseImg = new File("src/pause.png");
+  private boolean isPlaying = false;
 
   public Controller() {}
 
@@ -37,6 +44,8 @@ public class Controller {
     chatArea.setLineSpacing(5);
     playBtn.setDisable(true);
     nextBtn.setDisable(true);
+    prevBtn.setDisable(true);
+    isHost = false;
   }
 
   @FXML private TextField textInput;
@@ -45,8 +54,11 @@ public class Controller {
   @FXML private VBox userListPanel;
   @FXML private Button playBtn;
   @FXML private Button nextBtn;
+  @FXML private Button prevBtn;
   @FXML private VBox library;
   @FXML private ScrollPane libraryPane;
+  @FXML private ToggleButton songText;
+  @FXML private ImageView playBtnImg;
 
   @FXML
   private void sendText() {
@@ -72,25 +84,26 @@ public class Controller {
 
   @FXML
   private void play() {
-    JSONObject messageObj = new JSONObject();
-    messageObj.put("type", "play");
-    client.getWriter().println(messageObj.toString());
-    client.getWriter().flush();
-    System.out.println("sent play message");
+    if (isPlaying) {
+      JSONObject messageObj = new JSONObject();
+      messageObj.put("type", "pause");
+      client.getWriter().println(messageObj.toString());
+      client.getWriter().flush();
+      System.out.println("sent pause message");
+    } else {
+      JSONObject messageObj = new JSONObject();
+      messageObj.put("type", "play");
+      client.getWriter().println(messageObj.toString());
+      client.getWriter().flush();
+      System.out.println("sent play message");
+    }
   }
 
-  @FXML
-  private void pause() {
-    JSONObject messageObj = new JSONObject();
-    messageObj.put("type", "pause");
-    client.getWriter().println(messageObj.toString());
-    client.getWriter().flush();
-    System.out.println("sent pause message");
-  }
 
   public void enablePlayback() {
     playBtn.setDisable(false);
     nextBtn.setDisable(false);
+    prevBtn.setDisable(false);
   }
 
   private void playSong(String song) {
@@ -99,6 +112,10 @@ public class Controller {
     messageObj.put("song", song);
     client.getWriter().println(messageObj.toString());
     client.getWriter().flush();
+  }
+
+  public void setSong(String song) {
+    songText.setText(cleanSongName(song));
   }
 
   public void createSongList(ArrayList<String> songList) {
@@ -111,14 +128,13 @@ public class Controller {
             playSong(song);
           }
         });
+        songBtn.setDisable(true);
         library.getChildren().add(songBtn);
       }
     }
   }
 
-  private Button createSongButton(String song) {
-    System.out.println(song);
-    Button btn = new Button();
+  private String cleanSongName(String song) {
     StringBuilder songName = new StringBuilder();
     for (int i = 0; i < song.length(); i++) {
       if (song.charAt(i) == '.') {
@@ -126,6 +142,12 @@ public class Controller {
       }
       songName.append(song.charAt(i));
     }
+    return songName.toString();
+  }
+
+  private Button createSongButton(String song) {
+    Button btn = new Button();
+    String songName = cleanSongName(song);
     btn.setOnMouseEntered(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent mouseEvent) {
@@ -141,7 +163,7 @@ public class Controller {
     Shape shape = new Rectangle(5,5, Color.YELLOW);
     btn.setGraphic(shape);
     btn.setGraphicTextGap(10);
-    btn.setText(songName.toString());
+    btn.setText(songName);
     btn.setAlignment(Pos.CENTER_LEFT);
     btn.setTextFill(Color.WHITE);
     btn.setStyle("-fx-background-color: black; -fx-border-color: white; -fx-font-size: 15px");
@@ -149,6 +171,14 @@ public class Controller {
     btn.setMaxHeight(32);
     btn.prefWidthProperty().bind(libraryPane.widthProperty().divide(1.5));
     return btn;
+  }
+
+  public void setPlay(boolean isPlaying) {
+    this.isPlaying = isPlaying;
+    File imgFile = isPlaying ? pauseImg : playImg;
+    Image img = new Image(imgFile.toURI().toString());
+    playBtnImg.setImage(img);
+    playBtn.setAlignment(Pos.CENTER);
   }
 
   public void addUser(String username, boolean isHost) {
@@ -171,13 +201,11 @@ public class Controller {
     userListPanel.getChildren().add(user);
   }
 
-  public void setHost(String user) {
-    Circle circle = new Circle(4.5, Color.BLUEVIOLET);
-    for (Node e: userListPanel.getChildren()) {
-      ToggleButton btn = (ToggleButton) e;
-      if (btn.getText().equals(user)) {
-        btn.setGraphic(circle);
-      }
+  public void setHost() {
+    isHost = true;
+    for (Node node: library.getChildren()) {
+      Button btn = (Button) node;
+      btn.setDisable(false);
     }
   }
 
