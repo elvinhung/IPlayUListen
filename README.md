@@ -6,7 +6,8 @@ This is a desktop app that allows users to listen to music with each other. It c
 When a song is chosen by the "host", the audio file is streamed using TCP from the server to all connected clients. The chat room is also implemented using TCP. If you want to try using this yourself, make sure ports 8080 and 8081 are available.
 
 ## Images
-Login Screen
+Login Screen + Login Error
 
 ![login1](https://drive.google.com/uc?export=view&id=1e3Rc5nET3tHr786V54PlY_qGnqAbVSZf)
 ![login2](https://drive.google.com/uc?export=view&id=1mdiZdYtYm1nlrJYynLDg1hQz66SayB2D)
+![login error](https://drive.google.com/uc?export=view&id=1f9CBO_wYAiCYNcLmYvcXVI6gx7A3xR2Q)
