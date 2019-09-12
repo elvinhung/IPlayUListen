@@ -8,4 +8,4 @@ When a song is chosen by the "host", the audio file is streamed using TCP from t
 ## Images
 Login Screen
 
-![login1](https://drive.google.com/file/d/1e3Rc5nET3tHr786V54PlY_qGnqAbVSZf/view?usp=sharing)
+![login1](https://drive.google.com/uc?export=view&id=1e3Rc5nET3tHr786V54PlY_qGnqAbVSZf)
