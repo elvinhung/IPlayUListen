@@ -49,6 +49,11 @@ public class ClientChatHandler extends Thread {
             server.sendUsernames(this);
           }
         } else if (type.equals("play_song")) {
+          //pause clip on client side first
+          JSONObject stopMessageObj = new JSONObject();
+          stopMessageObj.put("type", "pause");
+          server.sendToAll(stopMessageObj.toString());
+
           String song = (String) messageObj.get("song");
           server.play(song);
         }

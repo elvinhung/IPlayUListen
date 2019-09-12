@@ -237,7 +237,7 @@ public class Main extends Application {
     private Clip clip = null;
     private long position = 0;
 
-    public synchronized void close() {
+    public void close() {
       isOpen = false;
     }
 
@@ -247,7 +247,7 @@ public class Main extends Application {
         position = clip.getMicrosecondPosition();
         clip.stop();
         System.out.println(position);
-        System.out.println("clip closed");
+        System.out.println("clip stopped");
       }
     }
 
@@ -264,22 +264,22 @@ public class Main extends Application {
     public void run() {
 //      File file = new File("src/Audio/test_file.wav");
 //      System.out.println(file.getAbsolutePath());
-      try {
-        //InputStream a = new BufferedInputStream(new FileInputStream(file));
-//        AudioFormat format = new AudioFormat((float) 41000.0, 16, 2, true, false);
-//        AudioInputStream ais = new AudioInputStream(audioIn, format, 25840);
-        AudioInputStream ais = AudioSystem.getAudioInputStream(audioIn);
-        clip = AudioSystem.getClip();
-        System.out.println("clip created");
-        clip.open(ais);
-        clip.start();
-        System.out.println("clip playing");
+
+      while (isOpen) {
+        try {
+          AudioInputStream ais = AudioSystem.getAudioInputStream(audioIn);
+          clip = AudioSystem.getClip();
+          System.out.println("clip created");
+          clip.open(ais);
+          clip.start();
+          System.out.println("clip playing");
 //        Thread.sleep(100);
 //        clip.drain();
-      } catch (Exception e) {
-        e.printStackTrace();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        System.out.println("done");
       }
-      System.out.println("done");
     }
 //      while (isOpen) {
 //        try {

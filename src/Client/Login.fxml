@@ -42,7 +42,7 @@
                   <Font name="Microsoft Sans Serif" size="15.0" />
                </font>
             </TextField>
-            <TextField fx:id="serverName" layoutX="54.0" layoutY="204.0" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" onKeyPressed="#userEnter" prefHeight="30.0" prefWidth="200.0" promptText="Server" style="-fx-border-color: white; -fx-background-color: white;">
+            <TextField fx:id="serverName" layoutX="54.0" layoutY="204.0" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" onKeyPressed="#userEnter" prefHeight="30.0" prefWidth="200.0" promptText="IP Address" style="-fx-border-color: white; -fx-background-color: white;">
                <font>
                   <Font name="Microsoft Sans Serif" size="15.0" />
                </font>
@@ -55,7 +55,7 @@
                   <Insets bottom="10.0" top="15.0" />
                </VBox.margin>
             </Button>
-            <Text fx:id="loginError" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter a valid server" visible="false">
+            <Text fx:id="loginError" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter a valid IP address" visible="false">
                <font>
                   <Font name="Microsoft Sans Serif" size="12.0" />
                </font>
