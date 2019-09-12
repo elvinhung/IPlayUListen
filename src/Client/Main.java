@@ -48,9 +48,9 @@ public class Main extends Application {
     loginStage.show();
   }
 
-  public void createMainStage(String username) throws Exception {
+  public boolean createMainStage(String username, String serverName) throws Exception {
     Stage primaryStage = new Stage();
-    if (!setUpChatNetworking("localhost", 8080) || !setUpAudioNetworking("localhost", 8081)) return;
+    if (!setUpChatNetworking(serverName, 8080) || !setUpAudioNetworking(serverName, 8081)) return false;
     loginStage.close();
 
     FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
@@ -73,11 +73,10 @@ public class Main extends Application {
           System.out.println("goodbye");
           incomingAudio.stopClip();
           primaryStage.close();
-        } catch (Exception e) {
-
-        }
+        } catch (Exception e) { }
       }
     });
+    return true;
   }
 
 

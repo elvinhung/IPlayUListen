@@ -9,16 +9,17 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class LoginController {
 
   private Main client;
 
-  @FXML
-  Line cursor;
-  @FXML
-  TextField username;
+  @FXML Line cursor;
+  @FXML TextField username;
+  @FXML TextField serverName;
+  @FXML Text loginError;
 
   public LoginController() {}
 
@@ -26,6 +27,7 @@ public class LoginController {
   @FXML
   private void initialize() {
     username.setFocusTraversable(false);
+    serverName.setFocusTraversable(false);
     StrokeTransition st = new StrokeTransition(Duration.millis(600), cursor, Color.WHITE, Color.BLACK);
     st.setCycleCount(Timeline.INDEFINITE);
     st.setAutoReverse(true);
@@ -35,8 +37,15 @@ public class LoginController {
   @FXML
   private void connect() throws Exception {
     String user = username.getText();
-    if (this.client != null && !user.trim().equals("")) {
-      client.createMainStage(user);
+    String server = serverName.getText();
+    if (this.client != null && !user.trim().equals("") && !server.trim().equals("")) {
+      if (!client.createMainStage(user, server)) {
+        loginError.setVisible(true);
+        username.clear();
+        serverName.clear();
+      }
+    } else {
+      loginError.setVisible(true);
     }
   }
 

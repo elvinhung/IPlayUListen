@@ -10,7 +10,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="374.0" prefWidth="287.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.LoginController">
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
@@ -35,7 +34,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <TextField fx:id="username" onKeyPressed="#userEnter" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" promptText="Username" style="-fx-border-color: white; -fx-background-color: white;">
+            <TextField fx:id="username" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" onKeyPressed="#userEnter" prefHeight="30.0" prefWidth="200.0" promptText="Username" style="-fx-border-color: white; -fx-background-color: white;">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
@@ -43,11 +42,24 @@
                   <Font name="Microsoft Sans Serif" size="15.0" />
                </font>
             </TextField>
-            <Button fx:id="connectBtn" onMousePressed="#connect" maxHeight="30.0" maxWidth="100.0" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: black; -fx-border-color: white;" text="Connect">
+            <TextField fx:id="serverName" layoutX="54.0" layoutY="204.0" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" onKeyPressed="#userEnter" prefHeight="30.0" prefWidth="200.0" promptText="Server" style="-fx-border-color: white; -fx-background-color: white;">
+               <font>
+                  <Font name="Microsoft Sans Serif" size="15.0" />
+               </font>
+            </TextField>
+            <Button fx:id="connectBtn" maxHeight="30.0" maxWidth="100.0" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onMousePressed="#connect" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: black; -fx-border-color: white;" text="Connect">
                <font>
                   <Font size="15.0" />
                </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="15.0" />
+               </VBox.margin>
             </Button>
+            <Text fx:id="loginError" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter a valid server" visible="false">
+               <font>
+                  <Font name="Microsoft Sans Serif" size="12.0" />
+               </font>
+            </Text>
          </children>
       </VBox>
    </center>
