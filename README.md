@@ -23,5 +23,4 @@ When a song is chosen by the "host", the audio file is streamed using TCP from t
 ### Non-host client with disabled playback controls and disabled song library
 
 ![nonhost client1](https://drive.google.com/uc?export=view&id=1cNtUIXI1ICdULE8qKiu9GeLekQCRgr-N)
-![](https://drive.google.com/open?id=140h0k8U0YDqsTILOHejS9Zx_rfnvQj9Q)
 ![nonhost client2](https://drive.google.com/uc?export=view&id=140h0k8U0YDqsTILOHejS9Zx_rfnvQj9Q)
