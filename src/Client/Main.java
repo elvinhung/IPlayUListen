@@ -72,7 +72,9 @@ public class Main extends Application {
         try {
           System.out.println("goodbye");
           incomingAudio.stopClip();
+          incomingAudio.close();
           primaryStage.close();
+          System.exit(0);
         } catch (Exception e) { }
       }
     });
